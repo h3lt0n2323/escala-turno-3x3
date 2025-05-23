@@ -55,6 +55,7 @@
 
   <script>
     const turmas = ["Turma B", "Turma A"];
+
     const supervisores = {
       "Turma A": {
         dia: { nome: "Paulo Candido", telefone: "41992196052" },
@@ -73,13 +74,14 @@
         return;
       }
 
-      const inicio = new Date("2025-01-01");
+      const inicio = new Date("2025-01-01T00:00:00");
       const atual = new Date(dataInput + "T00:00:00");
       const diffDias = Math.floor((atual - inicio) / (1000 * 60 * 60 * 24));
       const bloco = Math.floor(diffDias / 3);
       const turma = turmas[bloco % 2];
 
-      const hora = new Date().getHours();
+      const agora = new Date();
+      const hora = agora.getHours();
       const turno = (hora >= 6 && hora < 18) ? "dia" : "noite";
       const supervisor = supervisores[turma][turno];
 
@@ -92,6 +94,11 @@
           </a>
         </strong><br>
         (${turma}, turno ${turno.toUpperCase()})
+      `;
+    }
+  </script>
+</body>
+</html>
       `;
     }
   </script>
