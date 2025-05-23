@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Supervisor de Plantão Agora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f2f5;
+            padding: 50px;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+        }
+        #resultado {
+            margin-top: 40px;
+            font-size: 1.8em;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quem está de plantão agora?</h1>
+    <div id="resultado">Verificando...</div>
+
+    <script>
+        const turmas = ["Turma B", "Turma A"];
+        const supervisores = {
+            "Turma A": {
+                dia: "Paulo Candido",
+                noite: "Gabriel Kuerten"
+            },
+            "Turma B": {
+                dia: "Ivan de Oliveira",
+                noite: "Renato Alves"
+            }
+        };
+
+        function obterTurma(dataStr) {
+            const inicio = new Date("2025-01-01");
+            const atual = new Date(dataStr);
+            const diffDias = Math.floor((atual - inicio) / (1000 * 60 * 60 * 24));
+            const bloco = Math.floor(diffDias / 3);
+            return turmas[bloco % 2];
+        }
+
+        function verificarAgora() {
+            const agora = new Date();
+            const hora = agora.getHours();
+            const turno = (hora >= 6 && hora < 18) ? "dia" : "noite";
+
+            const dataStr = agora.toISOString().split("T")[0];
+            const turma = obterTurma(dataStr);
+            const supervisor = supervisores[turma][turno];
+
+            document.getElementById("resultado").innerHTML = `
+                ✅ Agora são ${hora.toString().padStart(2, '0')}:00<br>
+                Supervisor de plantão: <strong>${supervisor}</strong><br>
+                (${turma}, turno ${turno.toUpperCase()})
+            `;
+        }
+
+        verificarAgora();
+        setInterval(verificarAgora, 60000); // Atualiza a cada minuto
+    </script>
+</body>
+</html>
