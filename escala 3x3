@@ -1,106 +1,69 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Escala Turno 3x3</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-      padding: 20px;
-    }
-    .container {
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    input[type="date"] {
-      padding: 10px;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-left: 10px;
-      cursor: pointer;
-    }
-    #resultado {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-    a {
-      color: #0066cc;
-      text-decoration: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Supervisor de Plantão Agora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f2f5;
+            padding: 50px;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+        }
+        #resultado {
+            margin-top: 40px;
+            font-size: 1.8em;
+            color: #222;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Descubra quem está no turno 3x3</h1>
-    <input type="date" id="data" />
-    <button onclick="verificar()">Verificar</button>
-    <div id="resultado"></div>
-  </div>
+    <h1>Quem está de plantão agora?</h1>
+    <div id="resultado">Verificando...</div>
 
-  <script>
-    const turmas = ["Turma B", "Turma A"];
+    <script>
+        const turmas = ["Turma B", "Turma A"];
+        const supervisores = {
+            "Turma A": {
+                dia: "Paulo Candido",
+                noite: "Gabriel Kuerten"
+            },
+            "Turma B": {
+                dia: "Ivan de Oliveira",
+                noite: "Renato Alves"
+            }
+        };
 
-    const supervisores = {
-      "Turma A": {
-        dia: { nome: "Paulo Candido", telefone: "41992196052" },
-        noite: { nome: "Gabriel Kuerten", telefone: "41992229788" }
-      },
-      "Turma B": {
-        dia: { nome: "Ivan de Oliveira", telefone: "41996270451" },
-        noite: { nome: "Renato Alves", telefone: "41999552521" }
-      }
-    };
+        function obterTurma(dataStr) {
+            const inicio = new Date("2025-01-01");
+            const atual = new Date(dataStr);
+            const diffDias = Math.floor((atual - inicio) / (1000 * 60 * 60 * 24));
+            const bloco = Math.floor(diffDias / 3);
+            return turmas[bloco % 2];
+        }
 
-    function verificar() {
-      const dataInput = document.getElementById("data").value;
-      if (!dataInput) {
-        alert("Escolha uma data!");
-        return;
-      }
+        function verificarAgora() {
+            const agora = new Date();
+            const hora = agora.getHours();
+            const turno = (hora >= 6 && hora < 18) ? "dia" : "noite";
 
-      const inicio = new Date("2025-01-01T00:00:00");
-      const atual = new Date(dataInput + "T00:00:00");
-      const diffDias = Math.floor((atual - inicio) / (1000 * 60 * 60 * 24));
-      const bloco = Math.floor(diffDias / 3);
-      const turma = turmas[bloco % 2];
+            const dataStr = agora.toISOString().split("T")[0];
+            const turma = obterTurma(dataStr);
+            const supervisor = supervisores[turma][turno];
 
-      const agora = new Date();
-      const hora = agora.getHours();
-      const turno = (hora >= 6 && hora < 18) ? "dia" : "noite";
-      const supervisor = supervisores[turma][turno];
+            document.getElementById("resultado").innerHTML = `
+                ✅ Agora são ${hora.toString().padStart(2, '0')}:00<br>
+                Supervisor de plantão: <strong>${supervisor}</strong><br>
+                (${turma}, turno ${turno.toUpperCase()})
+            `;
+        }
 
-      document.getElementById("resultado").innerHTML = `
-        ✅ Agora são ${hora.toString().padStart(2, '0')}:00<br>
-        Supervisor de plantão: 
-        <strong>
-          <a href="tel:${supervisor.telefone}">
-            ${supervisor.nome}
-          </a>
-        </strong><br>
-        (${turma}, turno ${turno.toUpperCase()})
-      `;
-    }
-  </script>
-</body>
-</html>
-      `;
-    }
-  </script>
+        verificarAgora();
+        setInterval(verificarAgora, 60000); // Atualiza a cada minuto
+    </script>
 </body>
 </html>
