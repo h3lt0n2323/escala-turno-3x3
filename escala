@@ -28,15 +28,15 @@
     <script>
         const turmas = ["Turma B", "Turma A"];
         const supervisores = {
-            "Turma A": {
-                dia: "Paulo Candido",
-                noite: "Gabriel Kuerten"
-            },
-            "Turma B": {
-                dia: "Ivan de Oliveira",
-                noite: "Renato Alves"
-            }
-        };
+    "Turma A": {
+        dia: { nome: "Paulo Candido", telefone: "41992196052" },
+        noite: { nome: "Gabriel Kuerten", telefone: "41992229788" }
+    },
+    "Turma B": {
+        dia: { nome: "Ivan de Oliveira", telefone: "41996270451" },
+        noite: { nome: "Renato Alves", telefone: "41999552521" }
+    }
+};
 
         function obterTurma(dataStr) {
             const inicio = new Date("2025-01-01");
@@ -53,7 +53,17 @@
 
             const dataStr = agora.toISOString().split("T")[0];
             const turma = obterTurma(dataStr);
-            const supervisor = supervisores[turma][turno];
+           const supervisor = supervisores[turma][turno];
+document.getElementById("resultado").innerHTML = `
+    ✅ Agora são ${hora.toString().padStart(2, '0')}:00<br>
+    Supervisor de plantão: 
+    <strong>
+        <a href="tel:${supervisor.telefone}">
+            ${supervisor.nome}
+        </a>
+    </strong><br>
+    (${turma}, turno ${turno.toUpperCase()})
+`;
 
             document.getElementById("resultado").innerHTML = `
                 ✅ Agora são ${hora.toString().padStart(2, '0')}:00<br>
